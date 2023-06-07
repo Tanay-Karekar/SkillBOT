@@ -1,0 +1,68 @@
+import sys
+sys.path.append('C:\\Python37\\lib\\site-packages')
+import sys
+print(sys.executable)
+from flask import Flask, render_template, request
+import pickle
+from sklearn.ensemble import RandomForestClassifier
+from dialogflow_fulfillment import WebhookClient
+
+# Rest of your code...
+
+
+app = Flask(__name__)
+
+# Load the trained model from the .pkl file
+with open(r'C:\Users\TANAY\OneDrive\Desktop\Flask\my_model.pkl', 'rb') as file:
+    model = pickle.load(file)
+
+@app.route('/')
+def hello_world():
+    return render_template('frontend.html')
+
+@app.route('/products')
+def products():
+    return 'This is prodfsdf'
+
+@app.route('/dialogflow-fulfillment', methods=['POST'])
+def dialogflow_fulfillment():
+    req = request.get_json(silent=True, force=True)
+    agent = WebhookClient(req)
+
+    def say_hello(agent):
+        # Extract the user response from the webhook request JSON
+        user_response = agent.query
+        
+        # Encode the user response (process it as needed)
+        encoded_response = encode_response(user_response)
+        
+        # Make predictions using the loaded model and the encoded response
+        prediction = model.predict([encoded_response])
+        
+        # Decode the predicted response (process it as needed)
+        decoded_response = decode_prediction(prediction)
+        
+        # Add the decoded response to the agent's response
+        agent.add(decoded_response)
+    
+    intent_map = {
+        "Default Welcome Intent": say_hello
+    }
+    
+    agent.handle_request(intent_map)
+    return agent.response
+
+def encode_response(response):
+    # Encode the response using the necessary encoding logic
+    # Replace this with your actual encoding implementation
+    encoded_response = response.encode('utf-8')
+    return encoded_response
+
+def decode_prediction(prediction):
+    # Decode the prediction using the necessary decoding logic
+    # Replace this with your actual decoding implementation
+    decoded_prediction = prediction.decode('utf-8')
+    return decoded_prediction
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)

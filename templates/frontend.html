@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SkillBOT</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+  <style>
+    body {
+      background-image: linear-gradient(to bottom right, rgb(252, 205, 229), rgb(194, 240, 255));
+      animation: color-fade 10s ease-in-out infinite;
+      padding: 0%;
+      margin: 0%;
+    }
+    .navbar {
+      background-color: #00203f;
+    }
+    .navbar-brand, .navbar-nav .nav-link {
+      color: #f8f9fa;
+    }
+    .navbar-nav .nav-link {
+      margin-right: 10px;
+    }
+    .jumbotron {
+      background-color: #00203f;
+      color: #f8f9fa;
+    }
+    .bounce {
+      animation: bounce 2s infinite;
+    }
+    .main {
+      line-height: 210%;
+    }
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+    .bodyCards {
+      margin-bottom: 2%;
+    }
+    .slider {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .slider img {
+      width: 100%;
+    }
+    .h2 {
+      margin-top: 1.8rem;
+    }
+
+    .img-fluid {
+    max-width: 97%;
+    height: auto;
+}
+  
+
+.container {
+   padding: 40px;
+} 
+
+
+
+
+
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-sm">
+    <h1 class="text-white">SkillBOT</h1>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About Us</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="jumbotron text-center p-4">
+    <h1 class="display-4">Welcome to SkillBOT!</h1>
+    <p class="lead">We provide awesome Job Recommendation.</p>
+    <hr class="my-4">
+    <div class="run-animation">
+      <img src="https://www.bacancytechnology.com/main-boot-5/images/chatbot/side-img-1.gif" alt="Chatbot Icon" width="160" height="180">
+    </div>
+
+   
+
+   
+    
+  </div>
+  <div class="row">
+    <div class="col">
+
+      
+        <div class="container">
+         
+          <div class="row">
+            <div class="col-md-6">
+              <h1>Job Recommendation</h1>
+              <p>Are you unsure about which career path to pursue? Do you have a wide range of skills and interests but struggle to find the right job? Look no further! Our Job Recommendation Chatbot is here to help.</p>
+              <p>The Job Recommendation Chatbot is an innovative solution designed to provide personalized job recommendations based on your skills, experience, and preferences. It utilizes advanced algorithms and artificial intelligence to analyze your profile and match it with suitable job opportunities.</p>
+            </div>
+            <div class="col-md-6">
+              <img src="{{ url_for('static', filename='19362653-removebg-preview.png') }}" alt="Job Recommendation" class="img-fluid">
+
+            </div>
+          </div>
+
+          
+
+        </div>
+
+
+
+      
+
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="{{ url_for('static', filename='5162744-removebg-preview.png') }}"  alt="Job Recommendation" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+              <h1>Here's how the Job Recommendation Chatbot works:</h1>
+              <ol>
+                <li><strong>Skills Assessment:</strong> The Chatbot interacts with you to understand your skills and expertise. It may ask you questions about your educational background, work experience, and specific skills you possess.</li>
+                <li><strong>Preferences and Interests:</strong> The Chatbot also considers your preferences and interests. It might inquire about the type of work environment you prefer, the industry or sector you are interested in, and any specific job roles you have in mind.</li>
+                <li><strong>Data Analysis:</strong> Once it gathers all the necessary information, the Chatbot analyzes the data using sophisticated algorithms. It compares your skills, experience, and preferences with a vast database of job listings and career paths.</li>
+                <li><strong>Personalized Recommendations:</strong> Based on the analysis, the Chatbot generates a list of personalized job recommendations. These recommendations are tailored specifically to your profile, ensuring that they align with your qualifications and interests.</li>
+              </ol>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+        
+
+    </div>
+
+  </div>
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+  <df-messenger
+    chat-icon="https:&#x2F;&#x2F;cdn-icons-png.flaticon.com&#x2F;512&#x2F;6172&#x2F;6172907.png"
+    intent="WELCOME"
+    chat-title="SkillBOT"
+    agent-id="b239ee99-29dd-4203-bd68-844a10412255"
+    language-code="en"
+  ></df-messenger>
+  
+  <style>
+    df-messenger {
+     --df-messenger-bot-message: #5845B8;
+     --df-messenger-button-titlebar-color:  #003366;
+     --df-messenger-chat-background-color: white;
+     --df-messenger-font-color: white;
+     --df-messenger-send-icon: #000000;
+     --df-messenger-user-message: #E156EE;
+    }
+    </style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        //To minimise the height of chatbox
+        $(document).ready(function() {
+            window.addEventListener('dfMessengerLoaded', function (event) {
+            $r1 = document.querySelector("df-messenger");
+            $r2 = $r1.shadowRoot.querySelector("df-messenger-chat");
+            $r3 = $r2.shadowRoot.querySelector("df-messenger-user-input"); //for other mods
+            var sheet = new CSSStyleSheet;
+            // manage box height from here
+            sheet.replaceSync( `div.chat-wrapper[opened="true"] { height: 450px }`);
+            $r2.shadowRoot.adoptedStyleSheets = [ sheet ];
+            });
+        });
+    </script>
+  
+</body>
+</html>
+
+
+  
