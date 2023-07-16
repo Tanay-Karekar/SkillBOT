@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+import pickle
 from flask import Flask, render_template, request, make_response
 from joblib import load
 
@@ -59,54 +60,56 @@ def chat():
             user_responses[intent_name] = []
         user_responses[intent_name].append(user_response)
 
-        # Check if the intent is "Introvert"
-        if intent_name == "Introvert":
-            # Load the encoder and model from files
-            encoder_path = 'encodertest1.pkl'
-            model_path = 'modeltest1.pkl'
-
-            saved_encoder = load(encoder_path)
-            saved_model = load(model_path)
-
-            # Check if the user response is empty
-            if not user_response:
-                return "No user response available"
-
-            # Create a DataFrame from the user responses
-            user_responses_df = pd.DataFrame(user_responses)
-
-            # Encode the user responses using the saved encoder
-            user_responses_encoded = saved_encoder.transform(user_responses_df[categorical_features]).toarray()
-
-            # Get the feature names after encoding
-            encoded_feature_names = saved_encoder.get_feature_names_out(categorical_features)
-
-            # Create a DataFrame with the encoded categorical features
-            user_responses_encoded_df = pd.DataFrame(user_responses_encoded, columns=encoded_feature_names)
-
-            # Create a DataFrame with the numerical features
-            numerical_features_df = pd.DataFrame(user_responses_df[numerical_features], columns=numerical_features)
-
-            # Combine numerical and encoded categorical features
-            X = pd.concat([user_responses_encoded_df, numerical_features_df], axis=1)
-
-            # Make job predictions for the user responses
-            job_prediction = saved_model.predict(X)[0]
-
-            # Store the job prediction in a response for the chatbot
-            response = 'The Job Role That Best Suits Your Skills is "' + job_prediction + '"'
-            
-            # Save the user responses to a JSON file
-            with open('user_responses.json', 'w') as json_file:
-                json.dump(user_responses, json_file)
-
-            return {
-                'fulfillmentText': response
-            }
-
     # Save the user responses to a JSON file
     with open('user_responses.json', 'w') as json_file:
         json.dump(user_responses, json_file)
+
+    # Check if the intent is "Introvert" and perform the prediction logic
+    if intent_name == "Introvert":
+        # Load the encoder and model from files
+        encoder_path = 'encodertest1.pkl'
+        model_path = 'modeltest1.pkl'
+
+        with open(encoder_path, 'rb') as f:
+            saved_encoder = pickle.load(f)
+
+        with open(model_path, 'rb') as f:
+            saved_model = pickle.load(f)
+
+        # Load the new data
+        new_data_path = 'user_responses.json'
+        with open(new_data_path, 'r') as json_file:
+            new_data = json.load(json_file)
+
+        if not new_data:
+            return "No user responses available"
+
+        # Encode the new data using the saved encoder
+        new_data_encoded = saved_encoder.transform(pd.DataFrame(new_data, index=[0])[categorical_features]).toarray()
+
+        # Get the feature names after encoding
+        new_encoded_feature_names = saved_encoder.get_feature_names_out(categorical_features)
+
+        # Create a DataFrame with the encoded categorical features
+        new_data_encoded_df = pd.DataFrame(new_data_encoded, columns=new_encoded_feature_names)
+
+        # Combine numerical and encoded categorical features
+        new_data_numerical = pd.DataFrame(new_data, index=[0])[numerical_features]
+        X_new = pd.concat([new_data_numerical, new_data_encoded_df], axis=1)
+
+        # Reorder the columns to match the feature names used during training
+        X_new = pd.concat([X_new[numerical_features], X_new[new_encoded_feature_names]], axis=1)
+
+        # Make job predictions for new data
+        job_predictions = saved_model.predict(X_new)
+        print("The Job Role That Best Suits Your Skills is:", job_predictions)
+
+        # Store the job prediction in a response for the chatbot
+        response = 'The Job Role That Best Suits Your Skills is "' + job_predictions[0] + '"'
+
+        return {
+            'fulfillmentText': response
+        }
 
     return "OK"
 
@@ -120,7 +123,6 @@ def predict_job():
     if not new_data:
         return "No user responses available"
 
-    # Load the encoder and model from files
     encoder_path = 'encodertest1.pkl'
     model_path = 'modeltest1.pkl'
 
@@ -129,7 +131,6 @@ def predict_job():
 
     # Check if the "Introvert" feature exists in the new data
     if "Introvert" in new_data:
-        # Check if the "Memory Capability" column exists in the new data
         if "Memory Capability" not in new_data:
             return "Required information 'Memory Capability' is missing."
 
@@ -139,15 +140,30 @@ def predict_job():
 
     # Get the feature names after encoding
     new_encoded_feature_names = saved_encoder.get_feature_names_out(categorical_features)
-
-    # Create a DataFrame with the encoded categorical features
+   # Create a DataFrame with the encoded categorical features
     new_data_encoded_df = pd.DataFrame(new_data_encoded, columns=new_encoded_feature_names)
 
-    # Create a DataFrame with the numerical features
-    new_data_numerical = pd.DataFrame(pd.DataFrame(new_data, index=[0])[numerical_features], columns=numerical_features)
+    # Create a new DataFrame with the correct feature names and order
+    new_data_numerical = pd.DataFrame(new_data, index=[0])[numerical_features]
+    X_new = pd.concat([new_data_numerical, new_data_encoded_df], axis=1)
 
-    # Combine numerical and encoded categorical features
-    X_new = pd.concat([new_data_encoded_df, new_data_numerical], axis=1)
+    # Reorder the columns to match the feature names used during training
+    feature_names_used = numerical_features + new_encoded_feature_names
+    X_new = X_new[feature_names_used]
+
+    # Convert categorical features to integers
+    categorical_cols = [
+        col for col in X_new.columns if col.startswith('self-learning capability?')
+        or col.startswith('Extra-courses did') or col.startswith('certifications')
+        or col.startswith('Workshop') or col.startswith('Reading and Writing Skills')
+        or col.startswith('Memory Capability') or col.startswith('Interested Subjects')
+        or col.startswith('Interested Career Area') or col.startswith('Type of company want to settle in?')
+        or col.startswith('Taken inputs from seniors or elders') or col.startswith('Interested Type of Books')
+        or col.startswith('Management or Technical') or col.startswith('Hard/Smart worker')
+        or col.startswith('worked in teams ever?') or col.startswith('Introvert')
+    ]
+
+    X_new[categorical_cols] = X_new[categorical_cols].astype(int)
 
     # Make job predictions for new data
     job_predictions = saved_model.predict(X_new)

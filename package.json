@@ -1,0 +1,14 @@
+{
+  "name": "flask",
+  "version": "1.0.0",
+  "description": "I am an IT student from \"Shree Rayeshwar Institute of Engineering & Information Technology\" who had completed his degree in Information Technology Branch in 2023...!!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}
